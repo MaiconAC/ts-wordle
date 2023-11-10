@@ -1,0 +1,26 @@
+.header-content {
+    display: flex;
+    height: 50px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    padding: 0.5rem 12%;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+}
+
+.header-section {
+    display: flex;
+    align-items: center;
+}
+
+.header-section span {
+    margin: 0 10px
+}
+
+.img-logo {
+    height: 30px;
+    width: 30px;
+}
