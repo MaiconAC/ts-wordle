@@ -1,5 +1,4 @@
 import { Keyboard } from './Keyboard';
-import { WordRow } from './WordRow';
 import wordsJson from '../../services/wordsJson.json';
 import './styles.css';
 import { useState } from 'react';
@@ -23,7 +22,7 @@ export function MainGame() {
 
   const [answerWord, setAnswerWord] = useState<string>(drawWord);
 
-  function checkWordSent() {
+  const checkWordSent = () => {
     const lettersData: ILetterData[] = [];
     // Verifica cada letra da palavra
     for (let i = 0; i < answerWord.length; i++) {
@@ -57,14 +56,45 @@ export function MainGame() {
       setUserWon(false);
       setShowDialog(true);
     }
-  }
+  };
 
-  function restartGame() {
+  const restartGame = () => {
     setAttemptNumber(1);
     setWordsData([]);
     setAnswerWord(drawWord);
     setShowDialog(false);
-  }
+  };
+
+  const wordRow = (wordData: IWordData, rowKey: number) => {
+    return [...Array(5)].map((_, index) => {
+      const letterStyle =
+        rowKey > attemptNumber - 1
+          ? 'locked'
+          : wordData?.letters[index].type ?? '';
+
+      return (
+        <span
+          key={`${rowKey}-${index}`}
+          className={`row-letter ${letterStyle}`}
+        >
+          {wordData?.letters[index]?.text ?? ''}
+        </span>
+      );
+    });
+  };
+
+  // Cria a grid por meio de um map pois garante que vai criar pra todas as rows
+  const gameGrid = (
+    <div className="game-grid">
+      {[...Array(6)].map((_, index) => {
+        return (
+          <div key={index} className="grid-row">
+            {wordRow(wordsData[index], index)}
+          </div>
+        );
+      })}
+    </div>
+  );
 
   return (
     <div>
@@ -78,14 +108,7 @@ export function MainGame() {
       />
 
       <div className="main-wrapper">
-        <div className="game-grid">
-          <WordRow data={wordsData[0]} />
-          <WordRow data={wordsData[1]} />
-          <WordRow data={wordsData[2]} />
-          <WordRow data={wordsData[3]} />
-          <WordRow data={wordsData[4]} />
-          <WordRow data={wordsData[5]} />
-        </div>
+        {gameGrid}
 
         <Keyboard
           attemptNumber={attemptNumber}

@@ -1,7 +1,8 @@
+import './styles.css';
 interface IKeyboardProps {
   attemptNumber: number;
   setAttemptNumber: React.Dispatch<React.SetStateAction<number>>;
-  setAttemptWord: React.Dispatch<React.SetStateAction<string>>
+  setAttemptWord: React.Dispatch<React.SetStateAction<string>>;
   checkWordSent(): void;
 }
 
@@ -12,21 +13,17 @@ export function Keyboard(props: IKeyboardProps) {
   }
 
   return (
-    <div>
-      <input 
-        type="text" 
-        id="text_input" 
-        maxLength={5} 
+    <div className="container">
+      <input
+        type="text"
+        id="text_input"
+        maxLength={5}
         onChange={e => props.setAttemptWord(e.target.value)}
-        style={{ border: "4.8px solid lightgray", borderRadius: "5px" }}
+        placeholder="Digite aqui sua palavra"
       />
-      <button 
-        type="button" 
-        onClick={enviarPalavra}
-        style={{ border: "4.8px solid lightgray", borderRadius: "5px" }}
-      >
+      <button type="button" onClick={enviarPalavra}>
         Enviar
       </button>
     </div>
-  )
+  );
 }
