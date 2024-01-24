@@ -3,15 +3,10 @@ interface IKeyboardProps {
   attemptNumber: number;
   setAttemptNumber: React.Dispatch<React.SetStateAction<number>>;
   setAttemptWord: React.Dispatch<React.SetStateAction<string>>;
-  checkWordSent(): void;
+  sendWord(): void;
 }
 
 export function Keyboard(props: IKeyboardProps) {
-  function enviarPalavra() {
-    props.checkWordSent();
-    props.setAttemptNumber(props.attemptNumber + 1);
-  }
-
   return (
     <div className="container">
       <input
@@ -21,7 +16,7 @@ export function Keyboard(props: IKeyboardProps) {
         onChange={e => props.setAttemptWord(e.target.value)}
         placeholder="Digite aqui sua palavra"
       />
-      <button type="button" onClick={enviarPalavra}>
+      <button type="button" onClick={props.sendWord}>
         Enviar
       </button>
     </div>

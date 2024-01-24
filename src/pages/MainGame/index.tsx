@@ -2,15 +2,20 @@ import { Keyboard } from './Keyboard';
 import wordsJson from '../../services/wordsJson.json';
 import './styles.css';
 import { useState } from 'react';
-import { ILetterData, IWordData } from './interface';
+import { ILetterData, IWarningData, IWordData } from './interface';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
+import { WarningToast } from '../../components/WarningToast';
 
 export function MainGame() {
   const [attemptNumber, setAttemptNumber] = useState<number>(1);
   const [attemptWord, setAttemptWord] = useState<string>('');
+  const [userWon, setUserWon] = useState<boolean>(false);
   const [wordsData, setWordsData] = useState<IWordData[]>([]);
   const [showDialog, setShowDialog] = useState<boolean>(false);
-  const [userWon, setUserWon] = useState<boolean>(false);
+  const [warningData, setWarningData] = useState<IWarningData>(
+    {} as IWarningData,
+  );
+  const [showWarning, setShowWarning] = useState<boolean>(false);
 
   const drawWord = () => {
     // Sorteia um numero de 0 a 50
@@ -22,8 +27,23 @@ export function MainGame() {
 
   const [answerWord, setAnswerWord] = useState<string>(drawWord);
 
-  const checkWordSent = () => {
+  const openWarning = (data: IWarningData) => {
+    setWarningData(data);
+    setShowWarning(true);
+  };
+
+  const sendWord = () => {
     const lettersData: ILetterData[] = [];
+
+    if (attemptWord.length < 5) {
+      openWarning({
+        header: 'Palavra inválida!',
+        content: 'A palavra precisa ter 5 letras',
+      });
+
+      return;
+    }
+
     // Verifica cada letra da palavra
     for (let i = 0; i < answerWord.length; i++) {
       const letterSent = attemptWord.charAt(i);
@@ -56,6 +76,8 @@ export function MainGame() {
       setUserWon(false);
       setShowDialog(true);
     }
+
+    setAttemptNumber(attemptNumber + 1);
   };
 
   const restartGame = () => {
@@ -70,7 +92,7 @@ export function MainGame() {
       const letterStyle =
         rowKey > attemptNumber - 1
           ? 'locked'
-          : wordData?.letters[index].type ?? '';
+          : wordData?.letters[index].type ?? 'plain';
 
       return (
         <span
@@ -102,9 +124,15 @@ export function MainGame() {
         open={showDialog}
         confirmAction={restartGame}
         attemptNumber={attemptNumber}
-        header={
-          userWon ? 'Parabéns, você venceu!!' : 'Que pena, tente novamente'
-        }
+        answerWord={answerWord}
+        userWon={userWon}
+      />
+
+      <WarningToast
+        header={warningData.header}
+        content={warningData.content}
+        open={showWarning}
+        setOpen={setShowWarning}
       />
 
       <div className="main-wrapper">
@@ -114,7 +142,7 @@ export function MainGame() {
           attemptNumber={attemptNumber}
           setAttemptNumber={setAttemptNumber}
           setAttemptWord={setAttemptWord}
-          checkWordSent={checkWordSent}
+          sendWord={sendWord}
         />
       </div>
     </div>

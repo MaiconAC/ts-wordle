@@ -41,4 +41,14 @@
 
 .dialog-content * {
   background-color: white;
+
+  .footer {
+    display: flex;
+    justify-content: flex-end;
+
+    button {
+      background-color: var(--primary);
+    }
+  }
 }
+

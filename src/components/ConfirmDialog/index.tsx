@@ -4,12 +4,17 @@ import './styles.css';
 interface IConfirmDialogProps {
   open: boolean;
   attemptNumber: number;
-  header: string;
+  userWon: boolean;
+  answerWord: string;
   confirmAction: () => void;
 }
 
 export function ConfirmDialog(props: IConfirmDialogProps) {
-  const { open, attemptNumber, header, confirmAction } = props;
+  const { open, attemptNumber, userWon, answerWord, confirmAction } = props;
+
+  const header = userWon
+    ? 'Parabéns, você venceu!!'
+    : 'Que pena, tente novamente';
 
   return (
     <Dialog.Root open={open} modal={true}>
@@ -19,9 +24,21 @@ export function ConfirmDialog(props: IConfirmDialogProps) {
           <div>
             <h3>{header}</h3>
             <p>Número de tentativas: {attemptNumber - 1}</p>
-            <button type="button" onClick={confirmAction}>
-              Reiniciar
-            </button>
+            {!userWon ? (
+              <p>
+                A resposta era:{' '}
+                <span style={{ color: 'var(--primary)' }}>
+                  {answerWord.toLocaleUpperCase()}
+                </span>
+              </p>
+            ) : (
+              ''
+            )}
+            <div className="footer">
+              <button type="button" onClick={confirmAction}>
+                Reiniciar
+              </button>
+            </div>
           </div>
         </Dialog.Content>
       </Dialog.Portal>
