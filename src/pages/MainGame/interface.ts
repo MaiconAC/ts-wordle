@@ -1,10 +1,15 @@
 interface ILetterData {
   text?: string;
-  type?: string
+  type?: string;
 }
 
 interface IWordData {
-  letters: ILetterData[]
+  letters: ILetterData[];
 }
 
-export type { IWordData, ILetterData };
+interface IWarningData {
+  header: string;
+  content: string;
+}
+
+export type { IWordData, ILetterData, IWarningData };
