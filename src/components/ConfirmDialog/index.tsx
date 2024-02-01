@@ -3,14 +3,14 @@ import './styles.css';
 
 interface IConfirmDialogProps {
   open: boolean;
-  attemptNumber: number;
+  rowNumber: number;
   userWon: boolean;
-  answerWord: string;
+  answer: string;
   confirmAction: () => void;
 }
 
 export function ConfirmDialog(props: IConfirmDialogProps) {
-  const { open, attemptNumber, userWon, answerWord, confirmAction } = props;
+  const { open, rowNumber, userWon, answer, confirmAction } = props;
 
   const header = userWon
     ? 'Parabéns, você venceu!!'
@@ -23,12 +23,12 @@ export function ConfirmDialog(props: IConfirmDialogProps) {
         <Dialog.Content className="dialog-content">
           <div>
             <h3>{header}</h3>
-            <p>Número de tentativas: {attemptNumber - 1}</p>
+            <p>Número de tentativas: {rowNumber - 1}</p>
             {!userWon ? (
               <p>
                 A resposta era:{' '}
                 <span style={{ color: 'var(--primary)' }}>
-                  {answerWord.toLocaleUpperCase()}
+                  {answer.toLocaleUpperCase()}
                 </span>
               </p>
             ) : (

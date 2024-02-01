@@ -1,31 +1,31 @@
 import { Keyboard } from './Keyboard';
-import wordsJson from '../../services/wordsJson.json';
+import { drawAnswer } from '../../services/answerUtils';
 import './styles.css';
 import { useState } from 'react';
-import { ILetterData, IWarningData, IWordData } from './interface';
+import {
+  ISelectedWordData,
+  IWarningData,
+  IBoardRowData,
+  IBoardLetterData,
+} from './interface';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { WarningToast } from '../../components/WarningToast';
 
 export function MainGame() {
-  const [attemptNumber, setAttemptNumber] = useState<number>(1);
-  const [attemptWord, setAttemptWord] = useState<string>('');
+  const [answer, setAnswer] = useState<string>(drawAnswer);
+  const [rowNumber, setRowNumber] = useState<number>(0);
+  const [selectedWord, setSelectedWord] = useState<ISelectedWordData>({
+    letters: ['', '', '', '', ''],
+    indexPosition: 0,
+  });
   const [userWon, setUserWon] = useState<boolean>(false);
-  const [wordsData, setWordsData] = useState<IWordData[]>([]);
+  const [boardData, setBoardData] = useState<IBoardRowData[]>([]);
+
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [warningData, setWarningData] = useState<IWarningData>(
     {} as IWarningData,
   );
   const [showWarning, setShowWarning] = useState<boolean>(false);
-
-  const drawWord = () => {
-    // Sorteia um numero de 0 a 50
-    const drawNumber = Math.floor(Math.random() * 50);
-    const wordData = wordsJson[drawNumber];
-
-    return wordData.text;
-  };
-
-  const [answerWord, setAnswerWord] = useState<string>(drawWord);
 
   const openWarning = (data: IWarningData) => {
     setWarningData(data);
@@ -33,9 +33,14 @@ export function MainGame() {
   };
 
   const sendWord = () => {
-    const lettersData: ILetterData[] = [];
+    const lettersData: IBoardLetterData[] = [];
 
-    if (attemptWord.length < 5) {
+    // Valida se estão faltando letras
+    const attemptMissingLetters = selectedWord.letters.filter(
+      item => item === '',
+    );
+
+    if (attemptMissingLetters.length) {
       openWarning({
         header: 'Palavra inválida!',
         content: 'A palavra precisa ter 5 letras',
@@ -45,16 +50,15 @@ export function MainGame() {
     }
 
     // Verifica cada letra da palavra
-    for (let i = 0; i < answerWord.length; i++) {
-      const letterSent = attemptWord.charAt(i);
-      const secretWordLetter = answerWord.charAt(i);
+    for (const [index, letterSent] of selectedWord.letters.entries()) {
+      const secretWordLetter = answer.charAt(index);
 
       if (letterSent === secretWordLetter) {
         lettersData.push({
           text: letterSent,
           type: 'correct',
         });
-      } else if (answerWord.includes(letterSent)) {
+      } else if (answer.includes(letterSent)) {
         lettersData.push({
           text: letterSent,
           type: 'semi-correct',
@@ -67,30 +71,51 @@ export function MainGame() {
       }
     }
 
-    setWordsData([...wordsData, { letters: lettersData }]);
+    setBoardData([...boardData, { letters: lettersData }]);
 
-    if (attemptWord === answerWord) {
+    if (selectedWord.letters.join() === answer) {
       setUserWon(true);
       setShowDialog(true);
-    } else if (attemptNumber === 6) {
+    } else if (rowNumber === 4) {
       setUserWon(false);
       setShowDialog(true);
     }
 
-    setAttemptNumber(attemptNumber + 1);
+    // Ao enviar a palavra, pula para a próxima linha e limpa a palavra selecionada
+    setRowNumber(rowNumber + 1);
+    setSelectedWord({
+      letters: ['', '', '', '', ''],
+      indexPosition: 0,
+    });
   };
 
   const restartGame = () => {
-    setAttemptNumber(1);
-    setWordsData([]);
-    setAnswerWord(drawWord);
+    setRowNumber(1);
+    setBoardData([]);
+    setAnswer(drawAnswer);
     setShowDialog(false);
   };
 
-  const wordRow = (wordData: IWordData, rowKey: number) => {
+  const wordRow = (wordData: IBoardRowData, rowKey: number) => {
     return [...Array(5)].map((_, index) => {
+      // Caso a linha seja a linha atual, utiliza os dados do Keyboard
+      if (rowKey === rowNumber) {
+        const boxIsSelected = index === selectedWord.indexPosition;
+        return (
+          <span
+            key={`${rowKey}-${index}`}
+            className={`row-letter plain ${boxIsSelected ? 'selected' : ''}`}
+            onClick={() =>
+              setSelectedWord({ ...selectedWord, indexPosition: index })
+            }
+          >
+            {selectedWord?.letters[index]}
+          </span>
+        );
+      }
+
       const letterStyle =
-        rowKey > attemptNumber - 1
+        rowKey > rowNumber
           ? 'locked'
           : wordData?.letters[index].type ?? 'plain';
 
@@ -111,7 +136,7 @@ export function MainGame() {
       {[...Array(6)].map((_, index) => {
         return (
           <div key={index} className="grid-row">
-            {wordRow(wordsData[index], index)}
+            {wordRow(boardData[index], index)}
           </div>
         );
       })}
@@ -123,8 +148,8 @@ export function MainGame() {
       <ConfirmDialog
         open={showDialog}
         confirmAction={restartGame}
-        attemptNumber={attemptNumber}
-        answerWord={answerWord}
+        rowNumber={rowNumber}
+        answer={answer}
         userWon={userWon}
       />
 
@@ -139,9 +164,8 @@ export function MainGame() {
         {gameGrid}
 
         <Keyboard
-          attemptNumber={attemptNumber}
-          setAttemptNumber={setAttemptNumber}
-          setAttemptWord={setAttemptWord}
+          selectedWord={selectedWord}
+          setSelectedWord={setSelectedWord}
           sendWord={sendWord}
         />
       </div>

@@ -1,10 +1,15 @@
-interface ILetterData {
+interface ISelectedWordData {
+  letters: string[];
+  indexPosition: number;
+}
+
+interface IBoardLetterData {
   text?: string;
   type?: string;
 }
 
-interface IWordData {
-  letters: ILetterData[];
+interface IBoardRowData {
+  letters: IBoardLetterData[];
 }
 
 interface IWarningData {
@@ -12,4 +17,9 @@ interface IWarningData {
   content: string;
 }
 
-export type { IWordData, ILetterData, IWarningData };
+export type {
+  ISelectedWordData,
+  IBoardLetterData,
+  IBoardRowData,
+  IWarningData,
+};
