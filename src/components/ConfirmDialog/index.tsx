@@ -23,7 +23,7 @@ export function ConfirmDialog(props: IConfirmDialogProps) {
         <Dialog.Content className="dialog-content">
           <div>
             <h3>{header}</h3>
-            <p>Número de tentativas: {rowNumber - 1}</p>
+            <p>Número de tentativas: {rowNumber}</p>
             {!userWon ? (
               <p>
                 A resposta era:{' '}

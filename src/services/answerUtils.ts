@@ -1,9 +1,9 @@
-import wordsJson from './wordsJson.json';
+import { wordsList } from './wordsList';
 
-export function drawAnswer() {
-  // Sorteia um numero de 0 a 50
-  const drawNumber = Math.floor(Math.random() * 50);
-  const wordData = wordsJson[drawNumber];
+export function handleDrawAnswer() {
+  // Sorteia um numero de 0 a 999
+  const drawnNumber = Math.floor(Math.random() * 999);
+  const wordsData = new Array(...wordsList);
 
-  return wordData.text;
+  return wordsData[drawnNumber];
 }

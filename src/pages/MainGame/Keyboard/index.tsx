@@ -20,10 +20,13 @@ export function Keyboard(props: IKeyboardProps) {
       const updatedWordLetters = selectedWord.letters;
       updatedWordLetters[selectedWord.indexPosition] = letter;
 
+      const nextLetterIsEmpty =
+        updatedWordLetters[selectedWord.indexPosition + 1] === '';
+
       // Busca a proxima casa que nao esteja preenchida
-      const nextEmptyLetter = selectedWord.letters.findIndex(
-        item => item === '',
-      );
+      const nextEmptyLetter = nextLetterIsEmpty
+        ? selectedWord.indexPosition + 1
+        : selectedWord.letters.findIndex(item => item === '');
 
       setSelectedWord({
         letters: updatedWordLetters,

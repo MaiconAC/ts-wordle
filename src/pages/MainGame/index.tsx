@@ -1,5 +1,5 @@
 import { Keyboard } from './Keyboard';
-import { drawAnswer } from '../../services/answerUtils';
+import { handleDrawAnswer } from '../../services/answerUtils';
 import './styles.css';
 import { useState } from 'react';
 import {
@@ -12,7 +12,7 @@ import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { WarningToast } from '../../components/WarningToast';
 
 export function MainGame() {
-  const [answer, setAnswer] = useState<string>(drawAnswer);
+  const [answer, setAnswer] = useState<string>(handleDrawAnswer);
   const [rowNumber, setRowNumber] = useState<number>(0);
   const [selectedWord, setSelectedWord] = useState<ISelectedWordData>({
     letters: ['', '', '', '', ''],
@@ -73,10 +73,10 @@ export function MainGame() {
 
     setBoardData([...boardData, { letters: lettersData }]);
 
-    if (selectedWord.letters.join() === answer) {
+    if (selectedWord.letters.join('') === answer) {
       setUserWon(true);
       setShowDialog(true);
-    } else if (rowNumber === 4) {
+    } else if (rowNumber === 5) {
       setUserWon(false);
       setShowDialog(true);
     }
@@ -90,9 +90,9 @@ export function MainGame() {
   };
 
   const restartGame = () => {
-    setRowNumber(1);
+    setRowNumber(0);
     setBoardData([]);
-    setAnswer(drawAnswer);
+    setAnswer(handleDrawAnswer);
     setShowDialog(false);
   };
 
