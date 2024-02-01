@@ -1,20 +1,29 @@
 .container {
+  margin: 0 8px;
+}
+
+.kb-row {
   display: flex;
-  gap: 10px;
+  width: 100%;
+  margin: 0 auto 8px;
+  justify-content: center;
 }
 
 button {
-  border-radius: 0.5rem;
-  background-color: var(--primary);
-  color: var(--background);
+  font-size: medium;
+  font-weight: 900;
   border: none;
-  padding: 0.6em 1.5em;
+  border-radius: 4px;
+  padding: 0;
+  height: 55px;
+  width: 52px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 6px 0 0;
+  color: #696969;
 }
 
-input {
-  border-radius: 0.5rem;
-  background-color: var(--tertiary);
-  color: var(--text);
-  border: 0;
-  padding: 0.6em 1.5em;
+button, .icon {
+  background-color: lightgray;
 }

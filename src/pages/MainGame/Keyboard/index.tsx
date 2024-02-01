@@ -1,24 +1,172 @@
+import { ArrowLeftIcon } from '@radix-ui/react-icons';
 import './styles.css';
+import { ISelectedWordData } from '../interface';
 interface IKeyboardProps {
-  attemptNumber: number;
-  setAttemptNumber: React.Dispatch<React.SetStateAction<number>>;
-  setAttemptWord: React.Dispatch<React.SetStateAction<string>>;
+  selectedWord: ISelectedWordData;
+  setSelectedWord(e: ISelectedWordData): void;
   sendWord(): void;
 }
 
 export function Keyboard(props: IKeyboardProps) {
+  const { selectedWord, setSelectedWord, sendWord } = props;
+
+  function handleSelectLetter(letter: string) {
+    const attemptMissingLetters = selectedWord.letters.filter(
+      item => item === '',
+    );
+
+    // Se ainda existirem espaços vagos, preeche o espaço selecionado
+    if (attemptMissingLetters.length) {
+      const updatedWordLetters = selectedWord.letters;
+      updatedWordLetters[selectedWord.indexPosition] = letter;
+
+      // Busca a proxima casa que nao esteja preenchida
+      const nextEmptyLetter = selectedWord.letters.findIndex(
+        item => item === '',
+      );
+
+      setSelectedWord({
+        letters: updatedWordLetters,
+        indexPosition: nextEmptyLetter,
+      });
+    }
+  }
+
+  function handleDeleteLetter() {
+    // Se toda a palavra estiver preenchida, apaga o ultimo quadro
+    if (selectedWord.indexPosition === -1) {
+      const updatedWordLetters = selectedWord.letters;
+      updatedWordLetters[4] = '';
+
+      setSelectedWord({
+        letters: updatedWordLetters,
+        indexPosition: 4,
+      });
+    } else if (!selectedWord.letters[selectedWord.indexPosition]) {
+      // Se o quadro selecionado estiver vazio, apaga o anterior
+      // Se estiver vazio e na primeira posicao, nao faz nada
+      if (selectedWord.indexPosition === 0) return;
+
+      const updatedWordLetters = selectedWord.letters;
+      updatedWordLetters[selectedWord.indexPosition - 1] = '';
+
+      setSelectedWord({
+        letters: updatedWordLetters,
+        indexPosition: selectedWord.indexPosition - 1,
+      });
+    } else {
+      // Se o quadro estiver preenchido, apaga ele
+      const updatedWordLetters = selectedWord.letters;
+      updatedWordLetters[selectedWord.indexPosition] = '';
+
+      setSelectedWord({
+        letters: updatedWordLetters,
+        indexPosition: selectedWord.indexPosition,
+      });
+    }
+  }
+
   return (
     <div className="container">
-      <input
-        type="text"
-        id="text_input"
-        maxLength={5}
-        onChange={e => props.setAttemptWord(e.target.value)}
-        placeholder="Digite aqui sua palavra"
-      />
-      <button type="button" onClick={props.sendWord}>
-        Enviar
-      </button>
+      <div className="kb-row">
+        <button id="kb-q" onClick={() => handleSelectLetter('q')}>
+          Q
+        </button>
+        <button id="kb-w" onClick={() => handleSelectLetter('w')}>
+          W
+        </button>
+        <button id="kb-e" onClick={() => handleSelectLetter('e')}>
+          E
+        </button>
+        <button id="kb-r" onClick={() => handleSelectLetter('r')}>
+          R
+        </button>
+        <button id="kb-t" onClick={() => handleSelectLetter('t')}>
+          T
+        </button>
+        <button id="kb-y" onClick={() => handleSelectLetter('y')}>
+          Y
+        </button>
+        <button id="kb-u" onClick={() => handleSelectLetter('u')}>
+          U
+        </button>
+        <button id="kb-i" onClick={() => handleSelectLetter('i')}>
+          I
+        </button>
+        <button id="kb-o" onClick={() => handleSelectLetter('o')}>
+          O
+        </button>
+        <button id="kb-p" onClick={() => handleSelectLetter('p')}>
+          P
+        </button>
+      </div>
+      <div className="kb-row">
+        <button id="kb-a" onClick={() => handleSelectLetter('a')}>
+          A
+        </button>
+        <button id="kb-s" onClick={() => handleSelectLetter('s')}>
+          S
+        </button>
+        <button id="kb-d" onClick={() => handleSelectLetter('d')}>
+          D
+        </button>
+        <button id="kb-f" onClick={() => handleSelectLetter('f')}>
+          F
+        </button>
+        <button id="kb-g" onClick={() => handleSelectLetter('g')}>
+          G
+        </button>
+        <button id="kb-h" onClick={() => handleSelectLetter('h')}>
+          H
+        </button>
+        <button id="kb-j" onClick={() => handleSelectLetter('j')}>
+          J
+        </button>
+        <button id="kb-k" onClick={() => handleSelectLetter('k')}>
+          K
+        </button>
+        <button id="kb-l" onClick={() => handleSelectLetter('l')}>
+          L
+        </button>
+      </div>
+      <div className="kb-row">
+        <button id="kb-z" onClick={() => handleSelectLetter('z')}>
+          Z
+        </button>
+        <button id="kb-x" onClick={() => handleSelectLetter('x')}>
+          X
+        </button>
+        <button id="kb-c" onClick={() => handleSelectLetter('c')}>
+          C
+        </button>
+        <button id="kb-v" onClick={() => handleSelectLetter('v')}>
+          V
+        </button>
+        <button id="kb-b" onClick={() => handleSelectLetter('b')}>
+          B
+        </button>
+        <button id="kb-n" onClick={() => handleSelectLetter('n')}>
+          N
+        </button>
+        <button id="kb-m" onClick={() => handleSelectLetter('m')}>
+          M
+        </button>
+        <button
+          id="kb-backspace"
+          style={{ width: '65px' }}
+          onClick={handleDeleteLetter}
+        >
+          <ArrowLeftIcon
+            color="#696969"
+            className="icon"
+            width={25}
+            height={25}
+          />
+        </button>
+        <button id="kb-enter" style={{ width: '100px' }} onClick={sendWord}>
+          ENTER
+        </button>
+      </div>
     </div>
   );
 }
