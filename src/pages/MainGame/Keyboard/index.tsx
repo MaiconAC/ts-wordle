@@ -4,11 +4,11 @@ import { ISelectedWordData } from '../interface';
 interface IKeyboardProps {
   selectedWord: ISelectedWordData;
   setSelectedWord(e: ISelectedWordData): void;
-  sendWord(): void;
+  handleClickEnter(): void;
 }
 
 export function Keyboard(props: IKeyboardProps) {
-  const { selectedWord, setSelectedWord, sendWord } = props;
+  const { selectedWord, setSelectedWord, handleClickEnter } = props;
 
   function handleSelectLetter(letter: string) {
     const attemptMissingLetters = selectedWord.letters.filter(
@@ -35,7 +35,7 @@ export function Keyboard(props: IKeyboardProps) {
     }
   }
 
-  function handleDeleteLetter() {
+  function handleClickBackspace() {
     // Se toda a palavra estiver preenchida, apaga o ultimo quadro
     if (selectedWord.indexPosition === -1) {
       const updatedWordLetters = selectedWord.letters;
@@ -72,92 +72,40 @@ export function Keyboard(props: IKeyboardProps) {
   return (
     <div className="container">
       <div className="kb-row">
-        <button id="kb-q" onClick={() => handleSelectLetter('q')}>
-          Q
-        </button>
-        <button id="kb-w" onClick={() => handleSelectLetter('w')}>
-          W
-        </button>
-        <button id="kb-e" onClick={() => handleSelectLetter('e')}>
-          E
-        </button>
-        <button id="kb-r" onClick={() => handleSelectLetter('r')}>
-          R
-        </button>
-        <button id="kb-t" onClick={() => handleSelectLetter('t')}>
-          T
-        </button>
-        <button id="kb-y" onClick={() => handleSelectLetter('y')}>
-          Y
-        </button>
-        <button id="kb-u" onClick={() => handleSelectLetter('u')}>
-          U
-        </button>
-        <button id="kb-i" onClick={() => handleSelectLetter('i')}>
-          I
-        </button>
-        <button id="kb-o" onClick={() => handleSelectLetter('o')}>
-          O
-        </button>
-        <button id="kb-p" onClick={() => handleSelectLetter('p')}>
-          P
-        </button>
+        {['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'].map(
+          (letter, index) => {
+            return (
+              <button key={index} onClick={() => handleSelectLetter(letter)}>
+                {letter}
+              </button>
+            );
+          },
+        )}
       </div>
       <div className="kb-row">
-        <button id="kb-a" onClick={() => handleSelectLetter('a')}>
-          A
-        </button>
-        <button id="kb-s" onClick={() => handleSelectLetter('s')}>
-          S
-        </button>
-        <button id="kb-d" onClick={() => handleSelectLetter('d')}>
-          D
-        </button>
-        <button id="kb-f" onClick={() => handleSelectLetter('f')}>
-          F
-        </button>
-        <button id="kb-g" onClick={() => handleSelectLetter('g')}>
-          G
-        </button>
-        <button id="kb-h" onClick={() => handleSelectLetter('h')}>
-          H
-        </button>
-        <button id="kb-j" onClick={() => handleSelectLetter('j')}>
-          J
-        </button>
-        <button id="kb-k" onClick={() => handleSelectLetter('k')}>
-          K
-        </button>
-        <button id="kb-l" onClick={() => handleSelectLetter('l')}>
-          L
-        </button>
+        {['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ç'].map(
+          (letter, index) => {
+            return (
+              <button key={index} onClick={() => handleSelectLetter(letter)}>
+                {letter}
+              </button>
+            );
+          },
+        )}
       </div>
       <div className="kb-row">
-        <button id="kb-z" onClick={() => handleSelectLetter('z')}>
-          Z
-        </button>
-        <button id="kb-x" onClick={() => handleSelectLetter('x')}>
-          X
-        </button>
-        <button id="kb-c" onClick={() => handleSelectLetter('c')}>
-          C
-        </button>
-        <button id="kb-v" onClick={() => handleSelectLetter('v')}>
-          V
-        </button>
-        <button id="kb-b" onClick={() => handleSelectLetter('b')}>
-          B
-        </button>
-        <button id="kb-n" onClick={() => handleSelectLetter('n')}>
-          N
-        </button>
-        <button id="kb-m" onClick={() => handleSelectLetter('m')}>
-          M
-        </button>
+        {['Z', 'X', 'C', 'V', 'B', 'N', 'M'].map((letter, index) => {
+          return (
+            <button key={index} onClick={() => handleSelectLetter(letter)}>
+              {letter}
+            </button>
+          );
+        })}
+
         <button
           id="kb-backspace"
           style={{ width: '65px' }}
-          onClick={handleDeleteLetter}
+          onClick={handleClickBackspace}
         >
           <ArrowLeftIcon
             color="#696969"
@@ -166,7 +114,11 @@ export function Keyboard(props: IKeyboardProps) {
             height={25}
           />
         </button>
-        <button id="kb-enter" style={{ width: '100px' }} onClick={sendWord}>
+        <button
+          id="kb-enter"
+          style={{ width: '100px' }}
+          onClick={handleClickEnter}
+        >
           ENTER
         </button>
       </div>

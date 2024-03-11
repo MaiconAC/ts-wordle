@@ -1,13 +1,12 @@
 import { Keyboard } from './Keyboard';
-import { handleDrawAnswer } from '../../services/answerUtils';
+import {
+  getStatus,
+  handleDrawAnswer,
+  initializeBoard,
+} from '../../services/answerUtils';
 import './styles.css';
 import { useState } from 'react';
-import {
-  ISelectedWordData,
-  IWarningData,
-  IBoardRowData,
-  IBoardLetterData,
-} from './interface';
+import { IBoardCellData, ISelectedWordData, IWarningData } from './interface';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { WarningToast } from '../../components/WarningToast';
 
@@ -19,7 +18,9 @@ export function MainGame() {
     indexPosition: 0,
   });
   const [userWon, setUserWon] = useState<boolean>(false);
-  const [boardData, setBoardData] = useState<IBoardRowData[]>([]);
+  const [boardData, setBoardData] = useState<IBoardCellData[][]>(
+    initializeBoard(),
+  );
 
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [warningData, setWarningData] = useState<IWarningData>(
@@ -32,9 +33,7 @@ export function MainGame() {
     setShowWarning(true);
   };
 
-  const sendWord = () => {
-    const lettersData: IBoardLetterData[] = [];
-
+  function handleClickEnter() {
     // Valida se estão faltando letras
     const attemptMissingLetters = selectedWord.letters.filter(
       item => item === '',
@@ -49,29 +48,15 @@ export function MainGame() {
       return;
     }
 
-    // Verifica cada letra da palavra
-    for (const [index, letterSent] of selectedWord.letters.entries()) {
-      const secretWordLetter = answer.charAt(index);
+    const attemptData: IBoardCellData[] = getStatus(
+      selectedWord.letters,
+      answer,
+    );
 
-      if (letterSent === secretWordLetter) {
-        lettersData.push({
-          text: letterSent,
-          type: 'correct',
-        });
-      } else if (answer.includes(letterSent)) {
-        lettersData.push({
-          text: letterSent,
-          type: 'semi-correct',
-        });
-      } else {
-        lettersData.push({
-          text: letterSent,
-          type: 'wrong',
-        });
-      }
-    }
+    const updatedBoardData = boardData;
+    updatedBoardData[rowNumber] = attemptData;
 
-    setBoardData([...boardData, { letters: lettersData }]);
+    setBoardData(updatedBoardData);
 
     if (selectedWord.letters.join('') === answer) {
       setUserWon(true);
@@ -87,16 +72,16 @@ export function MainGame() {
       letters: ['', '', '', '', ''],
       indexPosition: 0,
     });
-  };
+  }
 
   const restartGame = () => {
     setRowNumber(0);
-    setBoardData([]);
+    setBoardData(initializeBoard());
     setAnswer(handleDrawAnswer);
     setShowDialog(false);
   };
 
-  const wordRow = (wordData: IBoardRowData, rowKey: number) => {
+  const wordRow = (wordData: IBoardCellData[], rowKey: number) => {
     return [...Array(5)].map((_, index) => {
       // Caso a linha seja a linha atual, utiliza os dados do Keyboard
       if (rowKey === rowNumber) {
@@ -109,22 +94,16 @@ export function MainGame() {
               setSelectedWord({ ...selectedWord, indexPosition: index })
             }
           >
-            {selectedWord?.letters[index]}
+            {selectedWord.letters[index]}
           </span>
         );
       }
 
-      const letterStyle =
-        rowKey > rowNumber
-          ? 'locked'
-          : wordData?.letters[index].type ?? 'plain';
+      const cellStyle = rowKey === rowNumber ? 'plain' : wordData[index].status;
 
       return (
-        <span
-          key={`${rowKey}-${index}`}
-          className={`row-letter ${letterStyle}`}
-        >
-          {wordData?.letters[index]?.text ?? ''}
+        <span key={`${rowKey}-${index}`} className={`row-letter ${cellStyle}`}>
+          {wordData[index].letter}
         </span>
       );
     });
@@ -166,7 +145,7 @@ export function MainGame() {
         <Keyboard
           selectedWord={selectedWord}
           setSelectedWord={setSelectedWord}
-          sendWord={sendWord}
+          handleClickEnter={handleClickEnter}
         />
       </div>
     </div>

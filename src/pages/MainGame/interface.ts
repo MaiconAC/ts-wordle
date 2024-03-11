@@ -1,15 +1,13 @@
+type LetterStatusType = 'correct' | 'semi-correct' | 'wrong' | 'locked';
+
 interface ISelectedWordData {
   letters: string[];
   indexPosition: number;
 }
 
-interface IBoardLetterData {
-  text?: string;
-  type?: string;
-}
-
-interface IBoardRowData {
-  letters: IBoardLetterData[];
+interface IBoardCellData {
+  letter: string;
+  status: LetterStatusType;
 }
 
 interface IWarningData {
@@ -17,9 +15,4 @@ interface IWarningData {
   content: string;
 }
 
-export type {
-  ISelectedWordData,
-  IBoardLetterData,
-  IBoardRowData,
-  IWarningData,
-};
+export type { ISelectedWordData, IWarningData, IBoardCellData };
