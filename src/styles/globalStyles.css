@@ -1,20 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
 :root {
-    --font: 'Poppins'; 
-    --text: #0e0305;
-    --background: #fcf0f3;
-    --primary: #d92a56;
-    --secondary: #eaa68c;
-    --tertiary: #f3cdbe;
+  --font: 'Poppins';
+  --text: #0e0305;
+  --background: #fcf0f3;
+  --primary: #d92a56;
+  --secondary: #eaa68c;
+  --tertiary: #f3cdbe;
+
+  --correct: lightgreen;
+  --semi-correct: #fbd859;
+  --wrong: lightgray;
 }
 
 * {
-    font-family: var(--font), sans-serif; 
-    color: var(--text);
-    background-color: var(--background);
+  font-family: var(--font), sans-serif;
+  color: var(--text);
+  background-color: var(--background);
 }
 
 body {
-    margin: 0;
+  margin: 0;
 }

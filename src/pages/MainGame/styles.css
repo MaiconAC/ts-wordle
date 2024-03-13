@@ -1,52 +1,104 @@
+@keyframes typingAnimation {
+  0% {
+    transform: perspective(200px) translateZ(0);
+    color: transparent;
+  }
+  25% {
+    color: transparent;
+  }
+  25% {
+    transform: perspective(200px) translateZ(30px);
+  }
+  100% {
+    transform: perspective(200px) translateZ(0);
+  }
+}
+
+@keyframes flipAnimation {
+  0% {
+    background-color: transparent;
+    border: 0.125em solid #4c4347;
+    transform: perspective(200px) rotateX(0deg);
+  }
+  50% {
+    background-color: transparent;
+    border: 0.125em solid #4c4347;
+    transform: perspective(200px) rotateX(90deg);
+  }
+  50% {
+    transform: perspective(200px) rotateX(-90deg);
+    background-color: var(--animColor);
+    border: none;
+  }
+  50% {
+    background-color: var(--animColor);
+    border: none;
+  }
+  100% {
+    transform: perspective(200px) rotateX(0deg);
+    background-color: var(--animColor);
+  }
+}
+
 .main-wrapper {
-    display: flex;
-    width: 100%;
-    margin-top: 80px;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  width: 100%;
+  margin-top: 80px;
+  flex-direction: column;
+  align-items: center;
 }
 
 .game-grid {
-    display: grid;
-    grid-template-rows: repeat(6, 60px);
-    gap: 0.2em;
-    margin-bottom: 30px;
-    font-size: 25px;
+  display: grid;
+  grid-template-rows: repeat(6, 60px);
+  gap: 0.2em;
+  margin-bottom: 30px;
+  font-size: 25px;
 }
 
 .grid-row {
-    display: grid;
-    grid-template-columns: repeat(5, 60px);
-    gap: 0.2em;
+  display: grid;
+  grid-template-columns: repeat(5, 60px);
+  gap: 0.2em;
 }
 
 .row-letter {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10%;
 }
 
 .correct {
-    background-color: lightgreen;
+  --animColor: var(--correct);
+  background-color: var(--correct);
+  animation: flipAnimation 0.45s linear 0s forwards;
 }
 
 .semi-correct {
-    background-color: #fbd859;
+  --animColor: var(--semi-correct);
+  background-color: var(--semi-correct);
+  animation: flipAnimation 0.45s linear 0s forwards;
 }
 
 .wrong {
-    background-color: #d3c2c2;
+  --animColor: var(--wrong);
+  background-color: var(--wrong);
+  animation: flipAnimation 0.45s linear 0s forwards;
 }
 
 .locked {
-    background-color: #e5e4e4;
+  background-color: #e5e4e4;
 }
 
 .plain {
-    border: 4.8px solid lightgray;
+  border: 4.8px solid lightgray;
 }
 
 .selected {
-    border: 4.8px solid var(--primary);
+  border: 4.8px solid var(--primary);
+}
+
+.filled {
+  animation: typingAnimation 0.15s ease-out 0s 1 normal none running;
 }

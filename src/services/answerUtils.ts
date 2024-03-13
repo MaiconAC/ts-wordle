@@ -1,6 +1,10 @@
 import { IBoardCellData } from '../pages/MainGame/interface';
 import { wordsList } from './wordsList';
 
+interface IKeyboardStatuses {
+  [key: string]: 'kb-correct' | 'kb-semi-correct' | 'kb-wrong';
+}
+
 export function handleDrawAnswer() {
   // Sorteia um numero de 0 a 999
   const drawnNumber = Math.floor(Math.random() * 999);
@@ -31,6 +35,26 @@ export function getStatus(
         letter: letterSent,
         status: 'wrong',
       });
+    }
+  }
+
+  return response;
+}
+
+export function getKeyboardStatuses(
+  boardData: IBoardCellData[][],
+): IKeyboardStatuses {
+  const response: IKeyboardStatuses = {};
+
+  for (const wordData of boardData) {
+    for (const letterData of wordData) {
+      if (letterData.status === 'wrong') {
+        response[letterData.letter] = 'kb-wrong';
+      } else if (letterData.status === 'correct') {
+        response[letterData.letter] = 'kb-correct';
+      } else if (response[letterData.letter] !== 'kb-correct') {
+        response[letterData.letter] = 'kb-semi-correct';
+      }
     }
   }
 

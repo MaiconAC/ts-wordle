@@ -74,6 +74,66 @@ export function MainGame() {
     });
   }
 
+  function handleClickBackspace() {
+    console.log('oi');
+    // Se toda a palavra estiver preenchida, apaga o ultimo quadro
+    if (selectedWord.indexPosition === -1) {
+      const updatedWordLetters = selectedWord.letters;
+      updatedWordLetters[4] = '';
+
+      setSelectedWord({
+        letters: updatedWordLetters,
+        indexPosition: 4,
+      });
+    } else if (!selectedWord.letters[selectedWord.indexPosition]) {
+      // Se o quadro selecionado estiver vazio, apaga o anterior
+      // Se estiver vazio e na primeira posicao, nao faz nada
+      if (selectedWord.indexPosition === 0) return;
+
+      const updatedWordLetters = selectedWord.letters;
+      updatedWordLetters[selectedWord.indexPosition - 1] = '';
+
+      setSelectedWord({
+        letters: updatedWordLetters,
+        indexPosition: selectedWord.indexPosition - 1,
+      });
+    } else {
+      // Se o quadro estiver preenchido, apaga ele
+      const updatedWordLetters = selectedWord.letters;
+      updatedWordLetters[selectedWord.indexPosition] = '';
+
+      setSelectedWord({
+        letters: updatedWordLetters,
+        indexPosition: selectedWord.indexPosition,
+      });
+    }
+  }
+
+  function handleSelectLetter(letter: string) {
+    const attemptMissingLetters = selectedWord.letters.filter(
+      item => item === '',
+    );
+
+    // Se ainda existirem espaços vagos, preeche o espaço selecionado
+    if (attemptMissingLetters.length) {
+      const updatedWordLetters = selectedWord.letters;
+      updatedWordLetters[selectedWord.indexPosition] = letter;
+
+      const nextLetterIsEmpty =
+        updatedWordLetters[selectedWord.indexPosition + 1] === '';
+
+      // Busca a proxima casa que nao esteja preenchida
+      const nextEmptyLetter = nextLetterIsEmpty
+        ? selectedWord.indexPosition + 1
+        : selectedWord.letters.findIndex(item => item === '');
+
+      setSelectedWord({
+        letters: updatedWordLetters,
+        indexPosition: nextEmptyLetter,
+      });
+    }
+  }
+
   const restartGame = () => {
     setRowNumber(0);
     setBoardData(initializeBoard());
@@ -85,11 +145,14 @@ export function MainGame() {
     return [...Array(5)].map((_, index) => {
       // Caso a linha seja a linha atual, utiliza os dados do Keyboard
       if (rowKey === rowNumber) {
-        const boxIsSelected = index === selectedWord.indexPosition;
+        const isSelected =
+          index === selectedWord.indexPosition ? 'selected' : '';
+        const isFilled = selectedWord.letters[index] !== '' ? 'filled' : '';
+
         return (
           <span
             key={`${rowKey}-${index}`}
-            className={`row-letter plain ${boxIsSelected ? 'selected' : ''}`}
+            className={`row-letter plain ${isSelected}  ${isFilled}`}
             onClick={() =>
               setSelectedWord({ ...selectedWord, indexPosition: index })
             }
@@ -143,9 +206,10 @@ export function MainGame() {
         {gameGrid}
 
         <Keyboard
-          selectedWord={selectedWord}
-          setSelectedWord={setSelectedWord}
+          boardData={boardData}
           handleClickEnter={handleClickEnter}
+          handleClickBackspace={handleClickBackspace}
+          handleSelectLetter={handleSelectLetter}
         />
       </div>
     </div>

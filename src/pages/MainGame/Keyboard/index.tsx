@@ -1,73 +1,46 @@
 import { ArrowLeftIcon } from '@radix-ui/react-icons';
 import './styles.css';
-import { ISelectedWordData } from '../interface';
+import { useEffect } from 'react';
+import { IBoardCellData } from '../interface';
+import { getKeyboardStatuses } from '../../../services/answerUtils';
+
 interface IKeyboardProps {
-  selectedWord: ISelectedWordData;
-  setSelectedWord(e: ISelectedWordData): void;
+  boardData: IBoardCellData[][];
   handleClickEnter(): void;
+  handleClickBackspace(): void;
+  handleSelectLetter(e: string): void;
 }
 
 export function Keyboard(props: IKeyboardProps) {
-  const { selectedWord, setSelectedWord, handleClickEnter } = props;
+  const {
+    boardData,
+    handleClickEnter,
+    handleClickBackspace,
+    handleSelectLetter,
+  } = props;
 
-  function handleSelectLetter(letter: string) {
-    const attemptMissingLetters = selectedWord.letters.filter(
-      item => item === '',
-    );
+  const keyboardStatuses = getKeyboardStatuses(boardData);
 
-    // Se ainda existirem espaços vagos, preeche o espaço selecionado
-    if (attemptMissingLetters.length) {
-      const updatedWordLetters = selectedWord.letters;
-      updatedWordLetters[selectedWord.indexPosition] = letter;
+  // Verifica as teclas pressionadas do teclado
+  useEffect(() => {
+    const listenerEvent = (e: KeyboardEvent) => {
+      const key = e.key.toLocaleUpperCase();
 
-      const nextLetterIsEmpty =
-        updatedWordLetters[selectedWord.indexPosition + 1] === '';
+      if (key.length === 1 && key >= 'A' && key <= 'Z') {
+        handleSelectLetter(key);
+      } else if (e.code === 'Backspace') {
+        handleClickBackspace();
+      } else if (e.code === 'Enter') {
+        handleClickEnter();
+      }
+    };
 
-      // Busca a proxima casa que nao esteja preenchida
-      const nextEmptyLetter = nextLetterIsEmpty
-        ? selectedWord.indexPosition + 1
-        : selectedWord.letters.findIndex(item => item === '');
+    document.addEventListener('keydown', listenerEvent);
 
-      setSelectedWord({
-        letters: updatedWordLetters,
-        indexPosition: nextEmptyLetter,
-      });
-    }
-  }
-
-  function handleClickBackspace() {
-    // Se toda a palavra estiver preenchida, apaga o ultimo quadro
-    if (selectedWord.indexPosition === -1) {
-      const updatedWordLetters = selectedWord.letters;
-      updatedWordLetters[4] = '';
-
-      setSelectedWord({
-        letters: updatedWordLetters,
-        indexPosition: 4,
-      });
-    } else if (!selectedWord.letters[selectedWord.indexPosition]) {
-      // Se o quadro selecionado estiver vazio, apaga o anterior
-      // Se estiver vazio e na primeira posicao, nao faz nada
-      if (selectedWord.indexPosition === 0) return;
-
-      const updatedWordLetters = selectedWord.letters;
-      updatedWordLetters[selectedWord.indexPosition - 1] = '';
-
-      setSelectedWord({
-        letters: updatedWordLetters,
-        indexPosition: selectedWord.indexPosition - 1,
-      });
-    } else {
-      // Se o quadro estiver preenchido, apaga ele
-      const updatedWordLetters = selectedWord.letters;
-      updatedWordLetters[selectedWord.indexPosition] = '';
-
-      setSelectedWord({
-        letters: updatedWordLetters,
-        indexPosition: selectedWord.indexPosition,
-      });
-    }
-  }
+    return () => {
+      document.removeEventListener('keydown', listenerEvent);
+    };
+  }, [handleClickBackspace, handleClickEnter, handleSelectLetter]);
 
   return (
     <div className="container">
@@ -75,7 +48,11 @@ export function Keyboard(props: IKeyboardProps) {
         {['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'].map(
           (letter, index) => {
             return (
-              <button key={index} onClick={() => handleSelectLetter(letter)}>
+              <button
+                key={index}
+                onClick={() => handleSelectLetter(letter)}
+                className={keyboardStatuses[letter]}
+              >
                 {letter}
               </button>
             );
@@ -86,7 +63,11 @@ export function Keyboard(props: IKeyboardProps) {
         {['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ç'].map(
           (letter, index) => {
             return (
-              <button key={index} onClick={() => handleSelectLetter(letter)}>
+              <button
+                key={index}
+                onClick={() => handleSelectLetter(letter)}
+                className={keyboardStatuses[letter]}
+              >
                 {letter}
               </button>
             );
@@ -96,7 +77,11 @@ export function Keyboard(props: IKeyboardProps) {
       <div className="kb-row">
         {['Z', 'X', 'C', 'V', 'B', 'N', 'M'].map((letter, index) => {
           return (
-            <button key={index} onClick={() => handleSelectLetter(letter)}>
+            <button
+              key={index}
+              onClick={() => handleSelectLetter(letter)}
+              className={keyboardStatuses[letter]}
+            >
               {letter}
             </button>
           );

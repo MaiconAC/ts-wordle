@@ -9,6 +9,18 @@
   justify-content: center;
 }
 
+.kb-correct {
+  background-color: var(--correct);
+}
+
+.kb-semi-correct {
+  background-color: var(--semi-correct);
+}
+
+.kb-wrong {
+  opacity: 0.5;
+}
+
 button {
   font-size: medium;
   font-weight: 900;
@@ -24,6 +36,7 @@ button {
   color: #696969;
 }
 
-button, .icon {
+button,
+.icon {
   background-color: lightgray;
 }
