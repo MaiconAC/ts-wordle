@@ -94,6 +94,10 @@
 .plain {
   border: 4.8px solid lightgray;
 }
+.plain:hover {
+  filter: brightness(97%); 
+  cursor: pointer;
+}
 
 .selected {
   border: 4.8px solid var(--primary);

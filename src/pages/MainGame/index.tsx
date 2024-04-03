@@ -1,30 +1,33 @@
-import { Keyboard } from './Keyboard';
+import { Keyboard } from "./Keyboard";
 import {
   getStatus,
   handleDrawAnswer,
   initializeBoard,
-} from '../../services/answerUtils';
-import './styles.css';
-import { useState } from 'react';
-import { IBoardCellData, ISelectedWordData, IWarningData } from './interface';
-import { ConfirmDialog } from '../../components/ConfirmDialog';
-import { WarningToast } from '../../components/WarningToast';
+} from "../../utils/answerUtils";
+import "./styles.css";
+import { useState } from "react";
+import { IBoardCellData, ISelectedWordData, IWarningData } from "./interface";
+import { ConfirmDialog } from "../../components/ConfirmDialog";
+import { WarningToast } from "../../components/WarningToast";
 
 export function MainGame() {
+  const emptySelectedWord = {
+    letters: ["", "", "", "", ""],
+    indexPosition: 0,
+  };
+
   const [answer, setAnswer] = useState<string>(handleDrawAnswer);
   const [rowNumber, setRowNumber] = useState<number>(0);
-  const [selectedWord, setSelectedWord] = useState<ISelectedWordData>({
-    letters: ['', '', '', '', ''],
-    indexPosition: 0,
-  });
+  const [selectedWord, setSelectedWord] =
+    useState<ISelectedWordData>(emptySelectedWord);
   const [userWon, setUserWon] = useState<boolean>(false);
   const [boardData, setBoardData] = useState<IBoardCellData[][]>(
-    initializeBoard(),
+    initializeBoard()
   );
 
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [warningData, setWarningData] = useState<IWarningData>(
-    {} as IWarningData,
+    {} as IWarningData
   );
   const [showWarning, setShowWarning] = useState<boolean>(false);
 
@@ -36,13 +39,13 @@ export function MainGame() {
   function handleClickEnter() {
     // Valida se estão faltando letras
     const attemptMissingLetters = selectedWord.letters.filter(
-      item => item === '',
+      (item) => item === ""
     );
 
     if (attemptMissingLetters.length) {
       openWarning({
-        header: 'Palavra inválida!',
-        content: 'A palavra precisa ter 5 letras',
+        header: "Palavra inválida!",
+        content: "A palavra precisa ter 5 letras",
       });
 
       return;
@@ -50,36 +53,33 @@ export function MainGame() {
 
     const attemptData: IBoardCellData[] = getStatus(
       selectedWord.letters,
-      answer,
+      answer
     );
 
     const updatedBoardData = boardData;
     updatedBoardData[rowNumber] = attemptData;
 
-    setBoardData(updatedBoardData);
+    const selectedWordString = selectedWord.letters.join("");
 
-    if (selectedWord.letters.join('') === answer) {
+    // Atualiza os dados do tabuleiro
+    setBoardData(updatedBoardData);
+    setRowNumber(rowNumber + 1);
+    setSelectedWord(emptySelectedWord);
+
+    if (selectedWordString === answer) {
       setUserWon(true);
       setShowDialog(true);
     } else if (rowNumber === 5) {
       setUserWon(false);
       setShowDialog(true);
     }
-
-    // Ao enviar a palavra, pula para a próxima linha e limpa a palavra selecionada
-    setRowNumber(rowNumber + 1);
-    setSelectedWord({
-      letters: ['', '', '', '', ''],
-      indexPosition: 0,
-    });
   }
 
   function handleClickBackspace() {
-    console.log('oi');
     // Se toda a palavra estiver preenchida, apaga o ultimo quadro
     if (selectedWord.indexPosition === -1) {
       const updatedWordLetters = selectedWord.letters;
-      updatedWordLetters[4] = '';
+      updatedWordLetters[4] = "";
 
       setSelectedWord({
         letters: updatedWordLetters,
@@ -91,7 +91,7 @@ export function MainGame() {
       if (selectedWord.indexPosition === 0) return;
 
       const updatedWordLetters = selectedWord.letters;
-      updatedWordLetters[selectedWord.indexPosition - 1] = '';
+      updatedWordLetters[selectedWord.indexPosition - 1] = "";
 
       setSelectedWord({
         letters: updatedWordLetters,
@@ -100,7 +100,7 @@ export function MainGame() {
     } else {
       // Se o quadro estiver preenchido, apaga ele
       const updatedWordLetters = selectedWord.letters;
-      updatedWordLetters[selectedWord.indexPosition] = '';
+      updatedWordLetters[selectedWord.indexPosition] = "";
 
       setSelectedWord({
         letters: updatedWordLetters,
@@ -111,7 +111,7 @@ export function MainGame() {
 
   function handleSelectLetter(letter: string) {
     const attemptMissingLetters = selectedWord.letters.filter(
-      item => item === '',
+      (item) => item === ""
     );
 
     // Se ainda existirem espaços vagos, preeche o espaço selecionado
@@ -120,12 +120,12 @@ export function MainGame() {
       updatedWordLetters[selectedWord.indexPosition] = letter;
 
       const nextLetterIsEmpty =
-        updatedWordLetters[selectedWord.indexPosition + 1] === '';
+        updatedWordLetters[selectedWord.indexPosition + 1] === "";
 
       // Busca a proxima casa que nao esteja preenchida
       const nextEmptyLetter = nextLetterIsEmpty
         ? selectedWord.indexPosition + 1
-        : selectedWord.letters.findIndex(item => item === '');
+        : selectedWord.letters.findIndex((item) => item === "");
 
       setSelectedWord({
         letters: updatedWordLetters,
@@ -146,8 +146,8 @@ export function MainGame() {
       // Caso a linha seja a linha atual, utiliza os dados do Keyboard
       if (rowKey === rowNumber) {
         const isSelected =
-          index === selectedWord.indexPosition ? 'selected' : '';
-        const isFilled = selectedWord.letters[index] !== '' ? 'filled' : '';
+          index === selectedWord.indexPosition ? "selected" : "";
+        const isFilled = selectedWord.letters[index] !== "" ? "filled" : "";
 
         return (
           <span
@@ -162,7 +162,7 @@ export function MainGame() {
         );
       }
 
-      const cellStyle = rowKey === rowNumber ? 'plain' : wordData[index].status;
+      const cellStyle = rowKey === rowNumber ? "plain" : wordData[index].status;
 
       return (
         <span key={`${rowKey}-${index}`} className={`row-letter ${cellStyle}`}>
