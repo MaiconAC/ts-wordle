@@ -1,8 +1,8 @@
-import { ArrowLeftIcon } from '@radix-ui/react-icons';
-import './styles.css';
-import { useEffect } from 'react';
-import { IBoardCellData } from '../interface';
-import { getKeyboardStatuses } from '../../../services/answerUtils';
+import { ArrowLeftIcon } from "@radix-ui/react-icons";
+import "./styles.css";
+import { useEffect } from "react";
+import { IBoardCellData } from "../interface";
+import { getKeyboardStatuses } from "../../../utils/answerUtils";
 
 interface IKeyboardProps {
   boardData: IBoardCellData[][];
@@ -26,61 +26,61 @@ export function Keyboard(props: IKeyboardProps) {
     const listenerEvent = (e: KeyboardEvent) => {
       const key = e.key.toLocaleUpperCase();
 
-      if (key.length === 1 && key >= 'A' && key <= 'Z') {
+      if (key.length === 1 && key >= "A" && key <= "Z") {
         handleSelectLetter(key);
-      } else if (e.code === 'Backspace') {
+      } else if (e.code === "Backspace") {
         handleClickBackspace();
-      } else if (e.code === 'Enter') {
+      } else if (e.code === "Enter") {
         handleClickEnter();
       }
     };
 
-    document.addEventListener('keydown', listenerEvent);
+    document.addEventListener("keydown", listenerEvent);
 
     return () => {
-      document.removeEventListener('keydown', listenerEvent);
+      document.removeEventListener("keydown", listenerEvent);
     };
   }, [handleClickBackspace, handleClickEnter, handleSelectLetter]);
 
   return (
     <div className="container">
       <div className="kb-row">
-        {['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'].map(
+        {["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"].map(
           (letter, index) => {
             return (
               <button
                 key={index}
                 onClick={() => handleSelectLetter(letter)}
-                className={keyboardStatuses[letter]}
+                className={`kb-key ${keyboardStatuses[letter]}`}
               >
                 {letter}
               </button>
             );
-          },
+          }
         )}
       </div>
       <div className="kb-row">
-        {['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ç'].map(
+        {["A", "S", "D", "F", "G", "H", "J", "K", "L", "Ç"].map(
           (letter, index) => {
             return (
               <button
                 key={index}
                 onClick={() => handleSelectLetter(letter)}
-                className={keyboardStatuses[letter]}
+                className={`kb-key ${keyboardStatuses[letter]}`}
               >
                 {letter}
               </button>
             );
-          },
+          }
         )}
       </div>
       <div className="kb-row">
-        {['Z', 'X', 'C', 'V', 'B', 'N', 'M'].map((letter, index) => {
+        {["Z", "X", "C", "V", "B", "N", "M"].map((letter, index) => {
           return (
             <button
               key={index}
               onClick={() => handleSelectLetter(letter)}
-              className={keyboardStatuses[letter]}
+              className={`kb-key ${keyboardStatuses[letter]}`}
             >
               {letter}
             </button>
@@ -89,8 +89,9 @@ export function Keyboard(props: IKeyboardProps) {
 
         <button
           id="kb-backspace"
-          style={{ width: '65px' }}
+          style={{ width: "65px" }}
           onClick={handleClickBackspace}
+          className="kb-key"
         >
           <ArrowLeftIcon
             color="#696969"
@@ -101,8 +102,9 @@ export function Keyboard(props: IKeyboardProps) {
         </button>
         <button
           id="kb-enter"
-          style={{ width: '100px' }}
+          style={{ width: "100px" }}
           onClick={handleClickEnter}
+          className="kb-key"
         >
           ENTER
         </button>

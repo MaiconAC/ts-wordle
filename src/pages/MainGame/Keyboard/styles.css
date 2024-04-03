@@ -21,7 +21,7 @@
   opacity: 0.5;
 }
 
-button {
+.kb-key {
   font-size: medium;
   font-weight: 900;
   border: none;
@@ -35,8 +35,12 @@ button {
   margin: 0 6px 0 0;
   color: #696969;
 }
+.kb-key:hover {
+  filter: brightness(95%);
+  cursor: pointer;
+}
 
-button,
+.kb-key,
 .icon {
   background-color: lightgray;
 }
