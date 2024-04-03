@@ -26,7 +26,6 @@
 }
 
 .dialog-content {
-  background-color: white;
   border-radius: 6px;
   position: fixed;
   top: 50%;
@@ -39,16 +38,31 @@
   animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.dialog-content * {
-  background-color: white;
-
-  .footer {
-    display: flex;
-    justify-content: flex-end;
-
-    button {
-      background-color: var(--primary);
-    }
-  }
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 35px;
 }
 
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: none;
+  padding: 0 15px;
+  font-size: 15px;
+  line-height: 1;
+  font-weight: 500;
+  height: 35px;
+}
+
+.button.action {
+  background-color: var(--primary);
+  color: white;
+}
+
+.button.cancel {
+  background-color: lightgray;
+  color: #696969;
+}

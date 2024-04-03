@@ -1,47 +1,59 @@
-import * as Dialog from '@radix-ui/react-dialog';
-import './styles.css';
+import * as AlertDialog from "@radix-ui/react-alert-dialog";
+import "./styles.css";
+
+type DialogBodyData = {
+  attempts: number;
+  answer: string;
+  userWon: boolean;
+};
 
 interface IConfirmDialogProps {
   open: boolean;
-  rowNumber: number;
-  userWon: boolean;
-  answer: string;
+  bodyData: DialogBodyData;
   confirmAction: () => void;
+  onOpenChange: (e: boolean) => void;
 }
 
 export function ConfirmDialog(props: IConfirmDialogProps) {
-  const { open, rowNumber, userWon, answer, confirmAction } = props;
+  const { open, bodyData, confirmAction, onOpenChange } = props;
 
-  const header = userWon
-    ? 'Parabéns, você venceu!!'
-    : 'Que pena, tente novamente';
+  const header = bodyData.userWon
+    ? "Parabéns, você venceu!!"
+    : "Que pena, tente novamente";
+
+  const victoryBody = <p>Número de tentativas: {bodyData.attempts}</p>;
+
+  const loseBody = (
+    <p>
+      A resposta era:{" "}
+      <span style={{ color: "var(--primary)" }}>
+        {bodyData.answer.toLocaleUpperCase()}
+      </span>
+    </p>
+  );
 
   return (
-    <Dialog.Root open={open} modal={true}>
-      <Dialog.Portal>
-        <Dialog.Overlay className="dialog-overlay" />
-        <Dialog.Content className="dialog-content">
-          <div>
-            <h3>{header}</h3>
-            <p>Número de tentativas: {rowNumber}</p>
-            {!userWon ? (
-              <p>
-                A resposta era:{' '}
-                <span style={{ color: 'var(--primary)' }}>
-                  {answer.toLocaleUpperCase()}
-                </span>
-              </p>
-            ) : (
-              ''
-            )}
-            <div className="footer">
-              <button type="button" onClick={confirmAction}>
-                Reiniciar
-              </button>
-            </div>
+    <AlertDialog.Root open={open} onOpenChange={onOpenChange}>
+      <AlertDialog.Portal>
+        <AlertDialog.Overlay className="dialog-overlay" />
+        <AlertDialog.Content className="dialog-content">
+          <AlertDialog.Title>{header}</AlertDialog.Title>
+          <AlertDialog.Description>
+            {bodyData.userWon ? victoryBody : loseBody}
+          </AlertDialog.Description>
+          <div className="footer">
+            <AlertDialog.Cancel className="button cancel">
+              Cancelar
+            </AlertDialog.Cancel>
+            <AlertDialog.Action
+              className="button action"
+              onClick={confirmAction}
+            >
+              Reiniciar
+            </AlertDialog.Action>
           </div>
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
+        </AlertDialog.Content>
+      </AlertDialog.Portal>
+    </AlertDialog.Root>
   );
 }

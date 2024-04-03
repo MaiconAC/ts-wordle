@@ -189,10 +189,13 @@ export function MainGame() {
     <div>
       <ConfirmDialog
         open={showDialog}
+        onOpenChange={setShowDialog}
         confirmAction={restartGame}
-        rowNumber={rowNumber}
-        answer={answer}
-        userWon={userWon}
+        bodyData={{
+          attempts: rowNumber,
+          userWon,
+          answer,
+        }}
       />
 
       <WarningToast
