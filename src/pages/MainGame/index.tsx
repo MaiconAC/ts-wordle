@@ -67,11 +67,15 @@ export function MainGame() {
     setSelectedWord(emptySelectedWord);
 
     if (selectedWordString === answer) {
-      setUserWon(true);
-      setShowDialog(true);
+      setTimeout(() => {
+        setUserWon(true);
+        setShowDialog(true);
+      }, 1000);
     } else if (rowNumber === 5) {
-      setUserWon(false);
-      setShowDialog(true);
+      setTimeout(() => {
+        setUserWon(false);
+        setShowDialog(true);
+      }, 500);
     }
   }
 

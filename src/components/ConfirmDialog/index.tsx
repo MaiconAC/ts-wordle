@@ -42,9 +42,6 @@ export function ConfirmDialog(props: IConfirmDialogProps) {
             {bodyData.userWon ? victoryBody : loseBody}
           </AlertDialog.Description>
           <div className="footer">
-            <AlertDialog.Cancel className="button cancel">
-              Cancelar
-            </AlertDialog.Cancel>
             <AlertDialog.Action
               className="button action"
               onClick={confirmAction}

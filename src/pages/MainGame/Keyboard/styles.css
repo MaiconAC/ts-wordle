@@ -10,11 +10,11 @@
 }
 
 .kb-correct {
-  background-color: var(--correct);
+  background-color: var(--correct) !important;
 }
 
 .kb-semi-correct {
-  background-color: var(--semi-correct);
+  background-color: var(--semi-correct) !important;
 }
 
 .kb-wrong {
